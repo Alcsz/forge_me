@@ -306,7 +306,12 @@ main.spread>.view{column-rule:1px solid var(--rule)}
 .view>h2[data-n]::before{position:static;margin-right:10px}
 .view>h2,.view>h3,.sechead{break-after:avoid}
 .fig,.tbl,.wrap,.callout,.q,.ccard,.chq header,.mnav,.tireans{break-inside:avoid}
-.fig svg{max-height:calc(var(--ph) - 230px)}
+main:not(.flat) .fig:not(.free){max-height:calc(var(--ph) - 4px);overflow:hidden}
+main:not(.flat) .fig.free>svg,main:not(.flat) .fig.free>div:has(>svg){flex:none}
+main:not(.flat) .fig.free svg{max-height:none}
+main:not(.flat) .fig>*{flex-shrink:0}
+main:not(.flat) .fig>svg,main:not(.flat) .fig>div:has(>svg){flex:0 1 auto;min-height:60px}
+main:not(.flat) .fig svg{max-height:100%}
 .scroll>svg{min-width:0!important}
 .tbl{overflow:visible}
 .sechead,.chq{break-before:column}
@@ -493,7 +498,7 @@ main.flat .folio,main.flat .pgbar{display:none}
 <article class="view" data-view="auto-2" hidden>
   <div class="eyebrow">Mécanique auto · Chapitre 02</div>
   <h1>Le moteur à quatre temps</h1>
-  <p class="intro">Un litre d'essence contient à peu près autant d'énergie qu'un sportif en dépense en une journée entière d'effort. Le moteur thermique est la machine qui libère cette énergie en la brûlant, et qui transforme la poussée des gaz chauds en rotation. Son principe date de la fin du XIX<sup>e</sup> siècle et n'a pas fondamentalement changé depuis.</p>
+  <p class="intro">Un litre d'essence contient environ 9 kilowattheures d'énergie, autant que ce qu'un adulte tire de sa nourriture en trois ou quatre jours. Le moteur thermique est la machine qui libère cette énergie en la brûlant, et qui transforme la poussée des gaz chauds en rotation. Son principe date de la fin du XIX<sup>e</sup> siècle et n'a pas fondamentalement changé depuis.</p>
   <p>On parle de moteur <strong>à combustion interne</strong> parce que la combustion a lieu à l'intérieur même du cylindre, contrairement à la machine à vapeur où l'on brûle le combustible à l'extérieur pour chauffer de l'eau. Ici, ce sont directement les gaz de combustion qui poussent sur les pièces mobiles.</p>
 
   <h2>Le piston, la bielle, le vilebrequin</h2>
@@ -691,7 +696,7 @@ main.flat .folio,main.flat .pgbar{display:none}
 <article class="view" data-view="auto-5" hidden>
   <div class="eyebrow">Mécanique auto · Chapitre 05</div>
   <h1>La transmission</h1>
-  <p class="intro">Un moteur thermique a des exigences étroites. Il ne peut pas tourner en dessous de 700 tours par minute environ, sous peine de caler, et il ne donne le meilleur de lui-même que dans une plage de régime limitée. Les roues, elles, doivent pouvoir partir de l'arrêt et tourner jusqu'à plus de 1 500 tours par minute sur autoroute. La transmission réconcilie ces deux mondes.</p>
+  <p class="intro">Un moteur thermique a des exigences étroites. Il ne peut pas tourner en dessous de 700 tours par minute environ, sous peine de caler, et il ne donne le meilleur de lui-même que dans une plage de régime limitée. Les roues, elles, doivent pouvoir partir de l'arrêt et tourner à plus de 1 000 tours par minute sur autoroute. La transmission réconcilie ces deux mondes.</p>
   <p>Elle remplit trois fonctions successives. L'embrayage sépare ou relie le moteur aux roues. La boîte de vitesses adapte le rapport entre la vitesse du moteur et celle des roues. Le différentiel répartit enfin le mouvement entre les deux roues d'un même essieu.</p>
 
   <h2>Embrayer et débrayer</h2>
@@ -1183,7 +1188,7 @@ main.flat .folio,main.flat .pgbar{display:none}
   <p>La manœuvre se fait en équipe. On prépare les amarres et les pare-battages des deux côtés avant d'entrer dans le port. On recule lentement vers la place, en corrigeant par petites impulsions. Un équipier passe les amarres arrière au quai, puis récupère la pendille, qui est souvent reliée par une petite ligne au quai, et la remonte vers l'avant pour la tendre. Le bateau est alors tenu à l'avant et à l'arrière, sans toucher le quai.</p>
 
   <h2>S'aider des amarres</h2>
-  <p>Les amarres ne servent pas seulement à tenir le bateau une fois arrivé : elles sont aussi un outil de manœuvre. La plus utile est la <strong>garde</strong>, une amarre qui part de l'avant du bateau et va vers l'arrière sur le quai, ou l'inverse. Prenons un bateau à hors-bord le long d'un quai, que le vent écarte. On frappe une garde de l'avant du bateau vers un point du quai situé plus en arrière. En tournant la barre du côté opposé au quai et en embrayant doucement en avant, l'avant reste retenu par la garde, et la poussée du moteur, orientée vers le large, plaque l'arrière contre le quai. Le bateau se colle alors tout entier le long du quai, et on peut passer les autres amarres calmement.</p>
+  <p>Les amarres ne servent pas seulement à tenir le bateau une fois arrivé : elles sont aussi un outil de manœuvre. La plus utile est la <strong>garde</strong>, une amarre qui part de l'avant du bateau et va vers l'arrière sur le quai, ou l'inverse. Prenons un bateau à hors-bord le long d'un quai, que le vent écarte. On frappe une garde de l'avant du bateau vers un point du quai situé plus en arrière. En tournant la barre du côté opposé au quai et en embrayant doucement en avant, l'avant reste retenu par la garde, et le moteur, en chassant son flux d'eau vers le large, pousse l'arrière contre le quai. Le bateau se colle alors tout entier le long du quai, et on peut passer les autres amarres calmement.</p>
 
   <section class="wrap">
     <h2>Ce qu'il faut retenir</h2>
@@ -1322,7 +1327,7 @@ main.flat .folio,main.flat .pgbar{display:none}
         <text x="20" y="318">ÉTRAVE</text><text x="470" y="318">TABLEAU</text>
       </g>
     </svg>
-    <figcaption>Le génois est représenté en bleu, la grande-voile en ambre. Le hauban, dans un plan transversal, est vu ici de profil, presque confondu avec le mât.</figcaption>
+    <figcaption>Le génois est représenté en bleu clair, la grande-voile en bleu vif. Le hauban, dans un plan transversal, est vu ici de profil, presque confondu avec le mât.</figcaption>
   </figure>
 
   <h2>Sous l'eau : la quille et le safran</h2>
@@ -1411,10 +1416,10 @@ main.flat .folio,main.flat .pgbar{display:none}
   <p>Cette combinaison se fait comme une addition de flèches, chaque vent ayant une direction et une force. On en tire deux règles très utiles. Dès que le bateau avance, le vent apparent vient toujours plus de l'avant que le vent réel. Et sa force dépend de l'allure : quand on remonte au vent, les deux vents s'ajoutent et le vent apparent est plus fort que le vent réel ; quand on navigue vent arrière, le vent de vitesse se retranche et le vent apparent faiblit.</p>
   <figure class="fig">
     <div class="bar2"><span>Bateau vu de dessus · route vers le haut</span><span class="readout" id="allure"></span></div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px 18px;font-size:13px;color:var(--muted)">
-      <label>Angle du vent réel <b class="readout" id="twav"></b><input type="range" id="twa" min="0" max="180" step="5" value="90" style="width:100%;accent-color:var(--accent)"></label>
-      <label>Vent réel <b class="readout" id="twsv"></b><input type="range" id="tws" min="4" max="25" step="1" value="12" style="width:100%;accent-color:var(--accent)"></label>
-      <label>Vitesse du bateau <b class="readout" id="bspv"></b><input type="range" id="bsp" min="0" max="8" step="0.5" value="6" style="width:100%;accent-color:var(--accent)"></label>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px 14px;font-size:12.5px;line-height:1.3;color:var(--muted)">
+      <label>Angle vent réel<br><b class="readout" id="twav"></b><input type="range" id="twa" min="0" max="180" step="5" value="90" style="width:100%;accent-color:var(--accent)"></label>
+      <label>Vent réel<br><b class="readout" id="twsv"></b><input type="range" id="tws" min="4" max="25" step="1" value="12" style="width:100%;accent-color:var(--accent)"></label>
+      <label>Vitesse bateau<br><b class="readout" id="bspv"></b><input type="range" id="bsp" min="0" max="8" step="0.5" value="6" style="width:100%;accent-color:var(--accent)"></label>
     </div>
     <svg id="aw" viewBox="0 0 520 380" role="img" aria-label="Composition du vent réel et du vent de vitesse">
       <defs>
@@ -1430,7 +1435,7 @@ main.flat .folio,main.flat .pgbar{display:none}
       <path id="vV" d="" fill="none" stroke="var(--muted)" stroke-width="2.5" stroke-dasharray="5 4" marker-end="url(#aV)"/>
       <path id="vA" d="" fill="none" stroke="var(--accent)" stroke-width="3.5" marker-end="url(#aP)"/>
     </svg>
-    <figcaption><span style="color:var(--air)">Bleu</span> : vent réel. <span style="color:var(--muted)">Pointillés</span> : vent de vitesse, venant de l'avant. <span style="color:var(--accent)">Ambre</span> : vent apparent, leur somme, qui agit sur les voiles. La zone rosée est le secteur que le bateau ne peut pas remonter. <b id="awread"></b></figcaption>
+    <figcaption><span style="color:var(--air)">Bleu clair</span> : vent réel. <span style="color:var(--muted)">Gris pointillé</span> : vent de vitesse, venant de l'avant. <span style="color:var(--accent)">Bleu vif</span> : vent apparent, leur somme, qui agit sur les voiles. La zone rosée est le secteur que le bateau ne peut pas remonter. <b id="awread"></b></figcaption>
   </figure>
   <p>Cette différence a des conséquences pratiques constantes. Un bateau qui accélère voit son vent apparent tourner vers l'avant, et il faut border les voiles pour suivre. Un équipage qui navigue vent arrière par 15 nœuds de vent réel ne ressent que 9 ou 10 nœuds et peut se croire dans une petite brise ; au moment de virer pour rentrer face au vent, il découvre brusquement près de 20 nœuds de vent apparent et une mer bien plus rude. C'est l'une des erreurs d'appréciation les plus classiques en croisière.</p>
 
@@ -1513,12 +1518,12 @@ main.flat .folio,main.flat .pgbar{display:none}
 
   <h2>La forme : creuse ou plate</h2>
   <p>Au-delà de son angle, une voile peut être plus ou moins creuse. Une voile <strong>creuse</strong> dévie davantage l'air et produit plus de puissance. C'est ce qu'il faut par petit temps, ou dans une mer formée qui ralentit le bateau à chaque vague et où l'on a besoin de puissance pour relancer. Une voile <strong>plate</strong> produit moins de force mais permet de serrer le vent de plus près et génère moins de gîte. C'est le réglage de la brise.</p>
-  <p>Plusieurs réglages agissent sur la forme de la grand-voile. La tension de la drisse et du cunningham, au guindant, déplace le creux vers l'avant quand on les tend, ce qui aplatit le haut de la voile. La tension de la bordure, le long de la bôme, aplatit le bas de la voile. Le <strong>hale-bas</strong>, qui tire la bôme vers le pied du mât, contrôle le <strong>vrillage</strong>, c'est-à-dire l'ouverture de la partie haute de la voile. Une voile vrillée laisse échapper le vent par le haut, ce qui réduit la puissance et la gîte : c'est souvent la première chose à faire quand le vent forcit. Enfin, le <strong>chariot</strong> d'écoute, qui coulisse sur un rail en travers du cockpit, permet de régler l'angle de la grand-voile sans modifier sa forme.</p>
+  <p>Plusieurs réglages agissent sur la forme de la grand-voile. La tension de la drisse et du cunningham, au guindant, déplace le creux vers l'avant quand on les tend, ce qui aplatit l'arrière de la voile et ouvre la chute. La tension de la bordure, le long de la bôme, aplatit le bas de la voile. Le <strong>hale-bas</strong>, qui tire la bôme vers le pied du mât, contrôle le <strong>vrillage</strong>, c'est-à-dire l'ouverture de la partie haute de la voile. Une voile vrillée laisse échapper le vent par le haut, ce qui réduit la puissance et la gîte : c'est souvent la première chose à faire quand le vent forcit. Enfin, le <strong>chariot</strong> d'écoute, qui coulisse sur un rail en travers du cockpit, permet de régler l'angle de la grand-voile sans modifier sa forme.</p>
 
   <h2>L'équilibre du bateau</h2>
   <p>Un voilier bien réglé doit pouvoir se barrer d'un doigt. Cela suppose un équilibre entre deux points : le <strong>centre de poussée vélique</strong>, où s'applique la force des voiles, et le <strong>centre de résistance latérale</strong>, où s'applique la résistance de la quille et de la coque à la dérive. Si le centre vélique est en arrière du centre de résistance, le vent pousse l'arrière du bateau sous le vent, et le bateau tend à pivoter pour remonter dans le vent : on dit qu'il est <strong>ardent</strong>. S'il est en avant, le bateau tend à s'écarter du vent : il est <strong>mou</strong>.</p>
   <p>Un bateau légèrement ardent est souhaitable. Il demande un petit angle de barre qui, en plus de corriger la trajectoire, fait travailler le safran comme une petite aile supplémentaire contre la dérive. Il est aussi plus sûr, car si l'on lâche la barre, il se met de lui-même face au vent et s'arrête. Mais un bateau trop ardent devient épuisant à barrer, et le safran, braqué en permanence, freine le bateau.</p>
-  <p>La gîte augmente fortement l'ardeur. En s'inclinant, le bateau décale sa force vélique vers l'extérieur, ce qui crée un couple supplémentaire qui le fait lofer. C'est pourquoi un bateau trop toilé, qui gîte beaucoup, devient dur à la barre et finit parfois par partir au lof malgré le barreur. La solution passe par la gîte : choquer ou vriller la grand-voile, qui est la voile arrière, réduit la force exercée à l'arrière du plan de voilure : le centre vélique avance et la barre est immédiatement soulagée. Réduire la grand-voile en premier, avant le génois, va dans le même sens.</p>
+  <p>La gîte augmente fortement l'ardeur. En s'inclinant, le bateau décale sa force vélique vers l'extérieur, ce qui crée un couple supplémentaire qui le fait lofer. C'est pourquoi un bateau trop toilé, qui gîte beaucoup, devient dur à la barre et finit parfois par partir au lof malgré le barreur. La solution consiste à réduire la gîte : choquer ou vriller la grand-voile, qui est la voile arrière, réduit la force exercée à l'arrière du plan de voilure : le centre vélique avance et la barre est immédiatement soulagée. Réduire la grand-voile en premier, avant le génois, va dans le même sens.</p>
 
   <section class="wrap">
     <h2>Ce qu'il faut retenir</h2>
@@ -1555,7 +1560,7 @@ main.flat .folio,main.flat .pgbar{display:none}
 
   <h2>Un homme à la mer</h2>
   <p>Une personne tombée à l'eau disparaît très vite de la vue, surtout dans la vague : au-delà de quelques dizaines de mètres, une tête est presque invisible. Les premières secondes sont donc décisives. On crie « Un homme à la mer ! » pour alerter tout l'équipage, on désigne une personne dont la seule mission est de garder les yeux sur la victime et de la montrer du bras sans jamais la quitter du regard, on lance une bouée, et on enregistre la position avec la touche MOB du GPS ou de la VHF.</p>
-  <p>Il faut ensuite revenir le plus vite possible, sans s'éloigner. Une méthode répandue sur les voiliers est l'arrêt rapide : on lofe immédiatement et on vire de bord sans toucher à l'écoute du génois, qui se retrouve à contre et freine le bateau. On tourne ensuite en restant près de la victime, pour revenir sur elle à vitesse réduite, en approchant par une allure où l'on peut contrôler sa vitesse en choquant les voiles. L'objectif est de s'arrêter à son contact, du côté sous le vent, où le bateau dérive vers elle.</p>
+  <p>Il faut ensuite revenir le plus vite possible, sans s'éloigner. Une méthode répandue sur les voiliers est l'arrêt rapide : on lofe immédiatement et on vire de bord sans toucher à l'écoute du génois, qui se retrouve à contre et freine le bateau. On tourne ensuite en restant près de la victime, pour revenir sur elle à vitesse réduite, en approchant par une allure où l'on peut contrôler sa vitesse en choquant les voiles. L'objectif est de s'arrêter juste au vent de la victime, pour qu'elle se retrouve le long du bord sous le vent, celui vers lequel le bateau dérive.</p>
   <p>Récupérer une personne à bord est souvent plus difficile que de la rejoindre : un adulte habillé et mouillé est très lourd, et le franc-bord d'un voilier est haut. Une échelle de bain, une drisse frappée sur un harnais ou un dispositif de levage dédié sont souvent nécessaires. Il ne faut pas hésiter à lancer un appel de détresse dès le début de la manœuvre, plutôt qu'à la fin. La meilleure protection reste de ne pas tomber : gilet porté et harnais accroché dès que la mer se forme ou que la nuit tombe.</p>
 
   <h2>Au moteur et au port</h2>
@@ -1994,6 +1999,7 @@ function layoutPages(){
  const gap=2*pad,pw=spread===2?(W-2*pad-gap)/2:W-2*pad,pt=W<640?24:44,pb=W<640?52:66;
  const st=main.style;st.setProperty('--pw',pw+'px');st.setProperty('--gap',gap+'px');st.setProperty('--pad',pad+'px');st.setProperty('--pt',pt+'px');st.setProperty('--pb',pb+'px');st.setProperty('--ph',(H-pt-pb)+'px');
  main.classList.toggle('spread',spread===2);
+ v.querySelectorAll('.fig').forEach(f=>{f.classList.remove('free');const g=f.querySelector('svg');if(f.scrollHeight>f.clientHeight+2||(g&&g.getBoundingClientRect().height<(H-pt-pb)*.36))f.classList.add('free')});
  setX(0,false);
  const vr=v.getBoundingClientRect(),er=v.querySelector(':scope>.pg-end').getBoundingClientRect();
  PG.spread=spread;PG.step=(pw+gap)*spread;PG.cols=Math.max(1,Math.round((er.left-vr.left-pad)/(pw+gap))+1);PG.n=Math.ceil(PG.cols/spread);
