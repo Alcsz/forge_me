@@ -400,6 +400,38 @@ main.flat .folio,main.flat .pgbar{display:none}
   .dc{grid-template-columns:88px minmax(0,1fr) auto;gap:14px}
   .dc .h{font-size:19px}.dc .pc{font-size:28px}
 }
+
+/* ---------- tourne-page ---------- */
+.flipfx{position:absolute;inset:0;z-index:4;pointer-events:none;perspective:1700px;perspective-origin:50% 45%;overflow:hidden}
+.flipfx.sp{perspective:2600px}
+.flipfx>div{position:absolute;top:0;bottom:0}
+.flipfx .hold{overflow:hidden;background:var(--paper)}
+.flipfx .leaf{transform-style:preserve-3d;will-change:transform;--lift:0}
+.flipfx .face{position:absolute;top:0;bottom:0;overflow:hidden;background:var(--paper);backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  box-shadow:0 0 calc(var(--lift)*90px) rgba(0,0,0,calc(var(--lift)*.9))}
+.flipfx .face.back{transform:rotateY(180deg)}
+.flipfx .shade{position:absolute;inset:0;opacity:0;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.55),rgba(0,0,0,.12) 18%,rgba(0,0,0,.04) 60%,rgba(255,255,255,.06))}
+.flipfx .face.back .shade{background:linear-gradient(270deg,rgba(0,0,0,.45),rgba(0,0,0,.1) 25%,rgba(0,0,0,.05))}
+.flipfx .cast{opacity:0;background:linear-gradient(90deg,rgba(0,0,0,.16),rgba(0,0,0,0) 35%)}
+.flipfx .cast.rev{background:linear-gradient(270deg,rgba(0,0,0,.16),rgba(0,0,0,0) 35%)}
+main.ghost{pointer-events:none}
+main.ghost>.view{will-change:auto}
+/* ---------- son ---------- */
+.snd{margin-left:auto;border:0;background:none;color:var(--muted);padding:6px;display:flex;cursor:pointer;border-radius:4px}
+.snd svg{width:20px;height:20px}.snd:hover{color:var(--ink)}
+.snd .x{display:none}.snd.off .x{display:inline}.snd.off .w{display:none}
+@media (max-width:860px){.snd{margin-left:2px;margin-right:-6px}}
+/* ---------- rappel ---------- */
+.remind{margin-top:16px;padding:20px 22px;background:var(--tint)}
+.remind p{margin:0;font-family:var(--f-serif);font-size:17px;line-height:1.5;color:var(--ink);max-width:62ch}
+.remind b{font-weight:600}
+.rsteps{margin:12px 0 0;padding-left:22px;font-family:var(--f-serif);font-size:16px;line-height:1.55;color:var(--text)}
+.rsteps code{font-family:var(--f-mono);font-size:13px;background:var(--paper);padding:1px 5px}
+.rb{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.remind .btn{font-family:var(--f-sans);font-size:13px;font-weight:650;letter-spacing:.03em;border:1px solid var(--ink);background:var(--paper);color:var(--ink);padding:10px 16px;border-radius:2px;cursor:pointer}
+.remind .btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+.remind .btn.ghostbtn{border-color:transparent;background:none;color:var(--muted)}
+.rcode{width:100%;margin-top:12px;height:90px;font-family:var(--f-mono);font-size:11px;border:1px solid var(--rule-2);background:var(--paper);color:var(--ink)}
 @media (prefers-reduced-motion: reduce){.flow{animation:none}*{transition:none!important}}
 </style>
 </head>
@@ -417,9 +449,10 @@ main.flat .folio,main.flat .pgbar{display:none}
 
 <div class="app">
 <header class="topbar">
-  <a class="brand" href="#auto"><b>Forge</b></a>
+  <a class="brand" href="#accueil"><b>Forge</b></a>
   <nav class="tabs" role="tablist" aria-label="Cours" id="tabs"></nav>
   <span class="cur" id="curtab"></span>
+  <button class="snd" id="snd" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path class="w" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="x" d="M16 9.5l5 5M21 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
 </header>
 <nav class="nav" aria-label="Chapitres">
   <ol id="navlist"></ol>
@@ -1842,7 +1875,7 @@ function buildQuiz(list,Q,onScore){let ans={},order=[];
   list.innerHTML=Q.map((q,i)=>`<div class="q" data-q="${i}"><span class="qn">Question ${i+1}</span><h3>${q[0]}</h3><div class="opts">${order[i].map(j=>`<button data-o="${j}">${q[1][j]}</button>`).join('')}</div><p class="exp" hidden></p></div>`).join('');onScore(0,0)};
  list.addEventListener('click',e=>{const b=e.target.closest('[data-o]');if(!b)return;const box=b.closest('.q'),i=+box.dataset.q,j=+b.dataset.o;if(i in ans)return;ans[i]=j;
   box.querySelectorAll('[data-o]').forEach(x=>{x.disabled=true;const k=+x.dataset.o;if(k===Q[i][2])x.classList.add('right');else if(k===j)x.classList.add('wrong')});
-  const ex=box.querySelector('.exp');ex.hidden=false;ex.textContent=(j===Q[i][2]?'Juste. ':'Raté. ')+Q[i][3];
+  sfxTap(j===Q[i][2]);const ex=box.querySelector('.exp');ex.hidden=false;ex.textContent=(j===Q[i][2]?'Juste. ':'Raté. ')+Q[i][3];
   onScore(Object.entries(ans).filter(([a,b])=>Q[a][2]===b).length,Object.keys(ans).length)});
  render();return render}
 // quiz views
@@ -1942,7 +1975,48 @@ function paintDash(){const el=$('dash');if(!el)return;
  <div class="dsec"><h2>${nx?'Chapitre du jour':'Prochaine étape'}</h2><span>${nx?`${left} min pour finir ce cours`:''}</span></div>${today}
  <div class="dsec"><h2>Cette semaine</h2><span>${wk} jour${wk>1?'s':''} de lecture sur 7</span></div><div class="week">${week}</div>
  <div class="dsec"><h2>Les trois cours</h2><span>${tot-rd} chapitres restants</span></div><div class="dcourses">${rows}</div>
- <div class="dnote"><b>Rappel</b><span>Un chapitre chaque matin à 8 h : la notification arrive sur ton téléphone.</span></div>`}
+ <div class="dsec"><h2>Rappel du matin</h2><span>8 h, chaque jour</span></div><div class="remind" id="remind"></div>`;
+ paintRemind();syncState(nx,st)}
+
+/* ===== rappel du matin ===== */
+const b64u=a=>{const u=new Uint8Array(a);let s='';for(const x of u)s+=String.fromCharCode(x);return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
+const ub64=s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';return Uint8Array.from(atob(s),c=>c.charCodeAt(0))};
+function notifText(nx,st){if(!nx)return{title:'Forge',body:'Tous les chapitres sont lus. Un quiz final pour vérifier ce qui est resté ?',url:'./#accueil'};
+ const [c,i]=nx,ch=c.ch[i];return{title:st>=2?`Série de ${st} jours · chapitre du jour`:'Ton chapitre du jour',body:`${c.name} · ${String(i+1).padStart(2,'0')} — ${ch[0]} (${ch[2]} min)`,url:`./#${c.id}-${i+1}`}}
+async function syncState(nx,st){try{if(!('caches' in window))return;const c=await caches.open('forge-state'),r=await c.match('state'),o=r?await r.json():{};
+ Object.assign(o,notifText(nx,st),{readDay:Object.values(LOG).includes(dkey(Date.now()))?new Intl.DateTimeFormat('fr-CA',{timeZone:'Europe/Paris'}).format(new Date()):o.readDay||''});
+ await c.put('state',new Response(JSON.stringify(o),{headers:{'content-type':'application/json'}}))}catch(e){}}
+async function swReg(){try{if(!('serviceWorker' in navigator)||!('PushManager' in window)||!('Notification' in window))return null;return await navigator.serviceWorker.getRegistration()||null}catch(e){return null}}
+async function vapid(){let k=null;try{k=JSON.parse(localStorage.getItem('forge-vapid')||'null')}catch(e){}if(k)return k;
+ const kp=await crypto.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'},true,['sign']),j=await crypto.subtle.exportKey('jwk',kp.privateKey);
+ const pub=new Uint8Array(65);pub[0]=4;pub.set(ub64(j.x),1);pub.set(ub64(j.y),33);k={pub:b64u(pub),priv:j.d};try{localStorage.setItem('forge-vapid',JSON.stringify(k))}catch(e){}return k}
+let PUSHCODE='';
+async function pushState(){const reg=await swReg();if(!reg)return'na';if(Notification.permission==='denied')return'denied';
+ const s=await reg.pushManager.getSubscription();if(!s||Notification.permission!=='granted')return'off';const k=await vapid();
+ PUSHCODE=b64u(new TextEncoder().encode(JSON.stringify({s:s.toJSON(),pub:k.pub,priv:k.priv,u:location.origin+location.pathname})));return'on'}
+async function enablePush(){const reg=await swReg();if(!reg)return;const p=await Notification.requestPermission();
+ if(p==='granted'){const k=await vapid();let s=await reg.pushManager.getSubscription();
+  if(s&&s.options&&s.options.applicationServerKey&&b64u(s.options.applicationServerKey)!==k.pub){await s.unsubscribe();s=null}
+  if(!s)await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:ub64(k.pub)});
+  try{if('periodicSync' in reg)await reg.periodicSync.register('forge-daily',{minInterval:12*3600e3})}catch(e){}}
+ paintRemind()}
+async function testPush(){const reg=await swReg();if(!reg)return;const n=notifText(nextChapter(),streak());
+ reg.showNotification(n.title,{body:n.body,icon:'icons/icon-192.png',badge:'icons/badge-96.png',tag:'forge-daily',data:{url:n.url}})}
+let linked=false;try{linked=localStorage.getItem('forge-push-linked')==='1'}catch(e){}
+async function paintRemind(){const el=$('remind');if(!el)return;let st='na';try{st=await pushState()}catch(e){}
+ const T={na:`<p>Le rappel arrive sous forme de notification de l’appli Forge installée sur ton téléphone. Ouvre Forge depuis son icône pour l’activer.</p>`,
+  denied:`<p>Les notifications de Forge sont bloquées. Autorise-les dans les réglages Android de l’appli (Notifications), puis reviens ici.</p>`,
+  off:`<p>Chaque matin à 8 h, une notification t’indique ton chapitre du jour.</p><div class="rb"><button class="btn pri" data-r="on">Activer le rappel</button></div>`,
+  on:linked?`<p><b>Rappel activé.</b> Notification chaque matin à 8 h avec ton chapitre du jour.</p><div class="rb"><button class="btn" data-r="test">Tester la notification</button><button class="btn ghostbtn" data-r="relink">Code de liaison</button></div>`
+   :`<p><b>Notifications autorisées.</b> Dernière étape, une seule fois, pour que le rappel parte à 8 h même appli fermée :</p>
+   <ol class="rsteps"><li>Copie ton code de liaison.</li><li>Sur GitHub, dépôt <b>forge_me</b> › <b>Settings</b> › <b>Secrets and variables</b> › <b>Actions</b> › <b>New repository secret</b>.</li><li>Name : <code>FORGE_PUSH</code>. Secret : colle le code. Puis <b>Add secret</b>.</li></ol>
+   <div class="rb"><button class="btn pri" data-r="copy">Copier le code</button><button class="btn" data-r="test">Tester</button><button class="btn ghostbtn" data-r="done">C’est fait</button></div><textarea class="rcode" readonly hidden></textarea>`};
+ el.innerHTML=T[st]}
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-r]');if(!b)return;const r=b.dataset.r;
+ if(r==='on')enablePush();else if(r==='test')testPush();
+ else if(r==='done'||r==='relink'){linked=r==='done';try{localStorage.setItem('forge-push-linked',linked?'1':'0')}catch(e){}paintRemind()}
+ else if(r==='copy'){let ok=false;try{await navigator.clipboard.writeText(PUSHCODE);ok=true}catch(err){}
+  const ta=b.closest('.remind').querySelector('.rcode');if(ok){b.textContent='Code copié ✓'}else{ta.hidden=false;ta.value=PUSHCODE;ta.select()}}});
 
 // tabs
 const tabHTML=c=>`<a href="#${c.id}" data-tab="${c.id}" role="tab" aria-selected="false"><svg aria-hidden="true"><use href="#ic-${c.id}"/></svg><span class="tl"><span class="nm"><span>${c.short}</span><span class="pc" data-tpc="${c.id}"></span></span><i class="tp"><b data-tbar="${c.id}"></b></i></span></a>`;
@@ -1962,13 +2036,13 @@ function route(){
  const h=location.hash.slice(1);let v=VIEWS.includes(h)?h:'accueil';
  const home=v==='accueil';main.classList.toggle('flat',home);appEl.classList.toggle('nonav',home);
  if(home){document.querySelectorAll('[data-tab]').forEach(a=>a.setAttribute('aria-selected',a.dataset.tab==='accueil'));$('curtab').textContent='Accueil';
-  document.querySelectorAll('.view').forEach(s=>s.hidden=s.dataset.view!==v);paintProgress();const d=curView();if(d){d.style.transform='none';d.scrollTop=0}return}
+  main.querySelectorAll(':scope>.view').forEach(s=>s.hidden=s.dataset.view!==v);paintProgress();const d=curView();if(d){d.style.transform='none';d.scrollTop=0}return}
  const c=v==='credits'?(curCourse||COURSES[0]):C[v.split('-')[0]];
  if(c!==curCourse||!$('navlist').children.length){curCourse=c;buildNav(c)}
  if(v!=='credits'){lastView[c.id]=v;saveLast();try{localStorage.setItem('atelier-tab',c.id)}catch(e){}}
  document.querySelectorAll('[data-tab]').forEach(a=>a.setAttribute('aria-selected',a.dataset.tab===c.id));
  $('curtab').textContent=c.name;
- document.querySelectorAll('.view').forEach(s=>s.hidden=s.dataset.view!==v);
+ main.querySelectorAll(':scope>.view').forEach(s=>s.hidden=s.dataset.view!==v);
  document.querySelectorAll('.lk').forEach(a=>{if(a.dataset.id===v)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
  const cur=document.querySelector(`.lk[data-id="${v}"]`);if(cur&&window.innerWidth<860)cur.scrollIntoView({inline:'center',block:'nearest'});
  paintProgress();window.scrollTo(0,0);
@@ -2004,11 +2078,59 @@ function layoutPages(){
  const vr=v.getBoundingClientRect(),er=v.querySelector(':scope>.pg-end').getBoundingClientRect();
  PG.spread=spread;PG.step=(pw+gap)*spread;PG.cols=Math.max(1,Math.round((er.left-vr.left-pad)/(pw+gap))+1);PG.n=Math.ceil(PG.cols/spread);
  if(PG.pendingLast){PG.i=PG.n-1;PG.pendingLast=false}
- PG.i=Math.max(0,Math.min(PG.n-1,PG.i));setX(PG.i*PG.step,false);paintFolio()}
-function go(i){if(main.classList.contains('flat'))return;
- if(i<0){const [L,k]=courseOrder();if(k>0){PG.pendingLast=true;location.hash=L[k-1]}else setX(0,true);return}
- if(i>=PG.n){const [L,k]=courseOrder();if(k>=0&&k<L.length-1){PG.i=0;location.hash=L[k+1]}else setX(PG.i*PG.step,true);return}
- PG.i=i;setX(i*PG.step,true);paintFolio()}
+ PG.i=Math.max(0,Math.min(PG.n-1,PG.i));setX(PG.i*PG.step,false);paintFolio();
+ if(PG.flip){const F=PG.flip;PG.flip=null;flipBuild(F);F.run(0,1,F.kill,true)}}
+/* ===== sons ===== */
+let AC=null,SND=true,NB=null;try{SND=localStorage.getItem('forge-sound')!=='0'}catch(e){}
+function ac(){if(!SND)return null;try{if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC}catch(e){return null}}
+function noiseBuf(c){if(NB&&NB.sampleRate===c.sampleRate)return NB;const n=c.sampleRate,b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);let l=0;for(let i=0;i<n;i++){const w=Math.random()*2-1;l=(l+.02*w)/1.02;d[i]=w*.55+l*3.2}return NB=b}
+function burst(c,t,dur,f0,f1,q,g,type){const s=c.createBufferSource();s.buffer=noiseBuf(c);const f=c.createBiquadFilter();f.type=type||'bandpass';f.Q.value=q;f.frequency.setValueAtTime(f0,t);f.frequency.exponentialRampToValueAtTime(f1,t+dur);
+ const a=c.createGain();a.gain.setValueAtTime(.0001,t);a.gain.exponentialRampToValueAtTime(g,t+Math.min(.035,dur*.3));a.gain.exponentialRampToValueAtTime(.0001,t+dur);s.connect(f).connect(a).connect(c.destination);s.start(t,Math.random()*.6);s.stop(t+dur+.03)}
+function sfxPage(){const c=ac();if(!c)return;const t=c.currentTime+.01,r=.88+Math.random()*.24;
+ burst(c,t,.30*r,1500*r,3800*r,.6,.13);burst(c,t+.04,.20*r,5600,2600,1.3,.05);burst(c,t+.09*r,.12,3200,1800,2,.035);burst(c,t+.24*r,.16,1100,420,.8,.11,'lowpass')}
+function sfxTap(ok){const c=ac();if(!c)return;const t=c.currentTime+.01;burst(c,t,.035,3400,2600,2.2,.09);
+ const o=c.createOscillator(),g=c.createGain();o.type=ok?'sine':'triangle';
+ if(ok){o.frequency.setValueAtTime(784,t+.03);o.frequency.setValueAtTime(1175,t+.1)}else{o.frequency.setValueAtTime(220,t+.03);o.frequency.exponentialRampToValueAtTime(160,t+.18)}
+ g.gain.setValueAtTime(.0001,t+.03);g.gain.exponentialRampToValueAtTime(ok?.06:.08,t+.045);g.gain.exponentialRampToValueAtTime(.0001,t+.26);o.connect(g).connect(c.destination);o.start(t+.03);o.stop(t+.3)}
+const sndBtn=$('snd');function paintSnd(){sndBtn.setAttribute('aria-pressed',SND);sndBtn.setAttribute('aria-label',SND?'Couper le son':'Activer le son');sndBtn.classList.toggle('off',!SND)}
+sndBtn.addEventListener('click',()=>{SND=!SND;try{localStorage.setItem('forge-sound',SND?'1':'0')}catch(e){}paintSnd();if(SND)sfxTap(true)});paintSnd();
+
+/* ===== tourne-page ===== */
+function ghostOf(rx){const v=curView(),g=document.createElement('main');g.className=main.className+' ghost';g.setAttribute('aria-hidden','true');
+ g.style.cssText=main.style.cssText+`;position:absolute;top:0;left:${-rx}px;width:${main.clientWidth}px;height:${main.clientHeight}px;margin:0`;
+ const c=v.cloneNode(true);c.removeAttribute('data-view');c.style.transition='none';g.appendChild(c);return g}
+function slab(cls,x,w,kid){const d=document.createElement('div');d.className=cls;d.style.left=x+'px';d.style.width=w+'px';if(kid)d.appendChild(kid);return d}
+function coverOf(){const fx=document.createElement('div');fx.className='flipfx';fx.appendChild(slab('hold',0,main.clientWidth,ghostOf(0)));main.appendChild(fx);return fx}
+function killFx(){main.querySelectorAll(':scope>.flipfx').forEach(e=>e.remove());if(PG.flip&&PG.flip.cover)PG.flip.cover.remove()}
+function flipPrep(dir){const W=main.clientWidth,sp=PG.spread===2,h=W/2,F={dir,sp,W,h,p:0,from:PG.i};
+ if(dir>0){F.front=ghostOf(sp?h:0);if(sp)F.hold=ghostOf(0)}else if(sp){F.front=ghostOf(0);F.hold=ghostOf(h)}else F.hold=ghostOf(0);
+ return F}
+function flipBuild(F){const {dir,sp,W,h}=F,lw=sp?h:W,lx=sp&&dir>0?h:0;
+ if(sp)F.back=ghostOf(dir>0?0:h);else if(dir<0)F.front=ghostOf(0);
+ const fx=document.createElement('div');fx.className='flipfx'+(sp?' sp':'');
+ if(F.hold)fx.appendChild(slab('hold',sp?(dir>0?0:h):0,lw,F.hold));
+ const cast=slab('cast'+(dir>0?'':' rev'),lx,lw);if(!(dir<0&&!sp))fx.appendChild(cast);
+ const leaf=slab('leaf',lx,lw);leaf.style.transformOrigin=sp&&dir<0?'100% 50%':'0 50%';
+ const fr=slab('face',0,lw,F.front),bk=slab('face back',0,lw,F.back||null);
+ [fr,bk].forEach(f=>{const i=document.createElement('i');i.className='shade';f.appendChild(i)});
+ leaf.append(fr,bk);fx.appendChild(leaf);main.appendChild(fx);if(F.cover){F.cover.remove();F.cover=null}
+ const A=sp?180:125,ang=p=>dir>0?-A*p:(sp?A*p:-A*(1-p));
+ F.set=p=>{F.p=p;const a=ang(p),s=Math.sin(Math.min(Math.abs(a),180)*Math.PI/180);leaf.style.transform=`rotateY(${a.toFixed(2)}deg)`;
+  fr.lastChild.style.opacity=(s*.32).toFixed(3);bk.lastChild.style.opacity=(.06+s*.24).toFixed(3);cast.style.opacity=(s*.9).toFixed(3);
+  leaf.style.setProperty('--lift',(s*.28).toFixed(3))};
+ F.kill=()=>fx.remove();
+ F.run=(from,to,cb,inout)=>{const t0=performance.now(),d=Math.max(180,(sp?760:640)*Math.abs(to-from));
+  const step=t=>{const k=Math.min(1,(t-t0)/d),e=inout?(k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2):1-Math.pow(1-k,3);F.set(from+(to-from)*e);if(k<1)requestAnimationFrame(step);else if(cb)cb()};requestAnimationFrame(step)};
+ F.set(F.p||0);return F}
+function go(i,noFx){if(main.classList.contains('flat'))return;
+ const fxOK=!reduce&&!noFx;
+ if(i<0||i>=PG.n){const [L,k]=courseOrder(),dir=i<0?-1:1,t=k+dir;
+  if(k>=0&&t>=0&&t<L.length){if(fxOK){killFx();setX(PG.i*PG.step,false);const F=flipPrep(dir);F.cover=coverOf();PG.flip=F;sfxPage()}
+   if(dir<0)PG.pendingLast=true;else PG.i=0;location.hash=L[t]}
+  else setX(PG.i*PG.step,true);return}
+ if(i===PG.i){setX(PG.i*PG.step,true);return}
+ if(fxOK){killFx();setX(PG.i*PG.step,false);const F=flipPrep(i>PG.i?1:-1);PG.i=i;setX(i*PG.step,false);paintFolio();flipBuild(F);sfxPage();F.run(0,1,F.kill,true)}
+ else{PG.i=i;setX(i*PG.step,true);paintFolio()}}
 folio.addEventListener('click',e=>{const b=e.target.closest('[data-pg]');if(b)go(PG.i+ +b.dataset.pg)});
 document.addEventListener('keydown',e=>{if(e.target.closest('input,textarea,select')||main.classList.contains('flat'))return;
  if(['ArrowRight','PageDown'].includes(e.key)||(e.key===' '&&!e.shiftKey)){e.preventDefault();go(PG.i+1)}
@@ -2020,13 +2142,22 @@ main.addEventListener('wheel',e=>{if(e.target.closest('input')||main.classList.c
 let drag=null,dragged=false;
 main.addEventListener('pointerdown',e=>{if(main.classList.contains('flat')||e.target.closest('input,select,textarea,.folio')||(e.pointerType==='mouse'&&e.button!==0))return;
  drag={x:e.clientX,y:e.clientY,t:performance.now(),dir:null,id:e.pointerId,mouse:e.pointerType==='mouse'};dragged=false});
+function undoFx(F){F.kill();PG.i=F.from;setX(F.from*PG.step,false);paintFolio()}
 main.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
  if(!drag.dir&&(Math.abs(dx)>8||Math.abs(dy)>8))drag.dir=Math.abs(dx)>Math.abs(dy)?'h':'v';
- if(drag.dir==='h'){dragged=true;let x=PG.i*PG.step-dx;const max=(PG.n-1)*PG.step;if(x<0)x=x/3;if(x>max)x=max+(x-max)/3;setX(x,false)}});
+ if(drag.dir!=='h')return;dragged=true;
+ const want=dx<0?1:-1,base=drag.F?drag.F.from:PG.i,t=base+want;
+ if(!reduce&&t>=0&&t<PG.n){
+  if(!drag.F||drag.F.dir!==want){if(drag.F)undoFx(drag.F);killFx();setX(PG.i*PG.step,false);const F=flipPrep(want);F.from=PG.i;PG.i=t;setX(t*PG.step,false);paintFolio();flipBuild(F);drag.F=F}
+  const F=drag.F;F.p=Math.min(1,Math.abs(dx)/((F.sp?F.h:F.W)*.85));F.set(F.p);return}
+ if(drag.F){undoFx(drag.F);drag.F=null}
+ let x=PG.i*PG.step-dx;const max=(PG.n-1)*PG.step;if(x<0)x=x/3;if(x>max)x=max+(x-max)/3;setX(x,false)});
 function endDrag(e){if(!drag||e.pointerId!==drag.id)return;const dx=e.clientX-drag.x,dt=performance.now()-drag.t,d=drag;drag=null;
  if(d.dir!=='h')return;const v=dx/Math.max(dt,1);
+ if(d.F){const F=d.F,go1=(F.dir>0?(dx<-60||v<-.35):(dx>60||v>.35))&&F.p>.08;
+  if(go1){sfxPage();F.run(F.p,1,F.kill)}else F.run(F.p,0,()=>undoFx(F));return}
  if(dx<-60||v<-.35)go(PG.i+1);else if(dx>60||v>.35)go(PG.i-1);else go(PG.i)}
-main.addEventListener('pointerup',endDrag);main.addEventListener('pointercancel',e=>{if(drag&&e.pointerId===drag.id){drag=null;go(PG.i)}});
+main.addEventListener('pointerup',endDrag);main.addEventListener('pointercancel',e=>{if(drag&&e.pointerId===drag.id){const F=drag.F;drag=null;if(F)F.run(F.p,0,()=>undoFx(F));else go(PG.i)}});
 main.addEventListener('click',e=>{if(dragged){e.preventDefault();e.stopPropagation();dragged=false;return}
  if(e.target.closest('a,button,input,label,select,textarea,svg,.seg,.tire,.q'))return;
  if(main.classList.contains('flat'))return;const r=main.getBoundingClientRect(),fx=(e.clientX-r.left)/r.width;if(fx<.12)go(PG.i-1);else if(fx>.88)go(PG.i+1)},true);

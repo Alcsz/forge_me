@@ -1,0 +1,29 @@
+name: Rappel du matin
+
+on:
+  schedule:
+    - cron: '30 5 * * *'
+    - cron: '30 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rappel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Installer web-push
+        working-directory: notify
+        run: npm install --no-save --no-audit --no-fund web-push@3.6.7
+      - name: Envoyer la notification
+        working-directory: notify
+        env:
+          FORGE_PUSH: ${{ secrets.FORGE_PUSH }}
+          SCHED: ${{ github.event.schedule }}
+        run: node send.mjs
